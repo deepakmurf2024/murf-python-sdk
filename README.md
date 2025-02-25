@@ -1,145 +1,155 @@
-# Murf Python Library
+# Murf Python SDK
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fmurf-ai%2Fmurf-python-sdk)
-[![pypi](https://img.shields.io/pypi/v/murf)](https://pypi.python.org/pypi/murf)
+![Murf AI Logo](https://cdn.prod.website-files.com/66b3765153a8a0c399c70981/6786264ae9b337a721779fba_ImageWrapper.webp)
+
+[![Built with Fern](https://img.shields.io/badge/Built%20with%20Fern-brightgreen)](https://buildwithfern.com)
+[![PyPI Version](https://img.shields.io/pypi/v/murf)](https://pypi.org/project/murf/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/gist/devgeetech-murf/bbe2c7eb01433f4a151f0fd2be23b1c8/murf-python-sdk.ipynb)
 
-The Murf Python library provides convenient access to the Murf API from Python.
+The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.ai/) API, enabling developers to convert text into lifelike speech effortlessly. With over 130 natural-sounding voices across 13+ languages and 20+ speaking styles, Murf API provides unparalleled speech customization for a wide range of applications.
 
-## Installation
+## ⚙️ Installation
 
-```sh
+Install the SDK using pip:
+
+```bash
 pip install murf
 ```
 
-## Reference
+## Getting Started
 
-A full reference for this library is available [here](./reference.md).
-
-## Usage
-
-Instantiate and use the client with the following:
+Here's a quick example to get you started with the Murf SDK:
 
 ```python
 from murf import Murf
 
-client = Murf(
-    api_key="YOUR_API_KEY",
-)
-client.text_to_speech.generate(
+# Initialize the client with your API key
+client = Murf(api_key="YOUR_API_KEY")
+
+# Generate speech from text
+audio = client.text_to_speech.generate(
     format="MP3",
     sample_rate=44100.0,
     text="Hello, world!",
     voice_id="en-US-natalie",
 )
+
+# Save the audio to a file
+with open("output.mp3", "wb") as f:
+    f.write(audio)
 ```
 
-## Async Client
 
-The SDK also exports an `async` client so that you can make non-blocking calls to our API.
+For more detailed information, refer to the [official documentation](https://murf.ai/api/docs/introduction/quickstart).
+
+## Features
+
+- **Text-to-Speech Conversion**: Transform text into natural-sounding speech.
+- **Multilingual Support**: Access voices in over 13 languages, including English, French, German, Spanish, Italian, Hindi, Portuguese, Dutch, Korean, Chinese (Mandarin), Bengali, Tamil, and Polish.
+- **Multiple Voice Styles**: Choose from 20+ speaking styles to suit your application's needs.
+- **Advanced Voice Customization**: Adjust parameters like pitch, speed, pauses, and pronunciation for optimal output.
+- **Asynchronous Support**: Utilize the async client for non-blocking API calls.
+
+## Asynchronous Usage
+
+The SDK supports asynchronous operations:
 
 ```python
 import asyncio
-
 from murf import AsyncMurf
 
-client = AsyncMurf(
-    api_key="YOUR_API_KEY",
-)
+# Initialize the async client
+client = AsyncMurf(api_key="YOUR_API_KEY")
 
-
-async def main() -> None:
-    await client.text_to_speech.generate(
+async def main():
+    audio = await client.text_to_speech.generate(
         format="MP3",
         sample_rate=44100.0,
         text="Hello, world!",
         voice_id="en-US-natalie",
     )
+    # Save the audio to a file
+    with open("output_async.mp3", "wb") as f:
+        f.write(audio)
 
-
+# Run the async function
 asyncio.run(main())
 ```
 
-## Exception Handling
+## Error Handling
 
-When the API returns a non-success status code (4xx or 5xx response), a subclass of the following error
-will be thrown.
+Handle exceptions gracefully to ensure robust applications:
 
 ```python
 from murf.core.api_error import ApiError
 
 try:
-    client.text_to_speech.generate(...)
+    client.text_to_speech.generate(
+        format="MP3",
+        sample_rate=44100.0,
+        text="Hello, world!",
+        voice_id="en-US-natalie",
+    )
 except ApiError as e:
-    print(e.status_code)
-    print(e.body)
+    print(f"Error: {e.status_code} - {e.body}")
 ```
 
-## Advanced
+## Advanced Configuration
 
-### Retries
+### Retry Mechanism
 
-The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
-as the request is deemed retriable and the number of retry attempts has not grown larger than the configured
-retry limit (default: 2).
-
-A request is deemed retriable when any of the following HTTP status codes is returned:
-
-- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
-- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
-- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
-
-Use the `max_retries` request option to configure this behavior.
+Configure automatic retries for transient errors:
 
 ```python
-client.text_to_speech.generate(..., request_options={
-    "max_retries": 1
-})
-```
-
-### Timeouts
-
-The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
-
-```python
-
-from murf import Murf
-
-client = Murf(
-    ...,
-    timeout=20.0,
+client.text_to_speech.generate(
+    format="MP3",
+    sample_rate=44100.0,
+    text="Hello, world!",
+    voice_id="en-US-natalie",
+    request_options={"max_retries": 3},
 )
-
-
-# Override timeout for a specific method
-client.text_to_speech.generate(..., request_options={
-    "timeout_in_seconds": 1
-})
 ```
 
-### Custom Client
+### Timeout Settings
 
-You can override the `httpx` client to customize it for your use-case. Some common use-cases include support for proxies
-and transports.
+Set timeouts to prevent hanging requests:
+
+```python
+# Set a client-wide timeout
+client = Murf(api_key="YOUR_API_KEY", timeout=30.0)
+
+# Override timeout for a specific request
+client.text_to_speech.generate(
+    format="MP3",
+    sample_rate=44100.0,
+    text="Hello, world!",
+    voice_id="en-US-natalie",
+    request_options={"timeout_in_seconds": 10},
+)
+```
+
+### Custom HTTP Client
+
+Integrate a custom HTTP client for advanced use cases:
+
 ```python
 import httpx
 from murf import Murf
 
-client = Murf(
-    ...,
-    httpx_client=httpx.Client(
-        proxies="http://my.test.proxy.example.com",
-        transport=httpx.HTTPTransport(local_address="0.0.0.0"),
-    ),
+# Create a custom HTTPX client
+custom_httpx_client = httpx.Client(
+    proxies="http://my.proxy.server",
+    transport=httpx.HTTPTransport(local_address="0.0.0.0"),
 )
+
+# Initialize the Murf client with the custom HTTPX client
+client = Murf(api_key="YOUR_API_KEY", httpx_client=custom_httpx_client)
 ```
 
 ## Contributing
 
-While we value open-source contributions to this SDK, this library is generated programmatically.
-Additions made directly to this library would have to be moved over to our generation code,
-otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
-a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
-an issue first to discuss with us!
+We welcome contributions to enhance the Murf Python SDK. Please note that this library is generated programmatically; direct modifications may be overwritten. To contribute, consider opening an issue to discuss your ideas or improvements. Contributions to the documentation are especially appreciated!
 
-On the other hand, contributions to the README are always very welcome!
+---
+
+By incorporating clear examples, detailed feature descriptions, and advanced configuration options, this README aims to provide a comprehensive guide for developers utilizing the Murf Python SDK. 
