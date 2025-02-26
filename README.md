@@ -1,6 +1,6 @@
 # Murf Python SDK
 
-![Murf AI Logo](https://cdn.prod.website-files.com/66b3765153a8a0c399c70981/6786264ae9b337a721779fba_ImageWrapper.webp)
+![Murf AI Logo](https://murf.ai/public-assets/home/Murf_Logo.png)
 
 [![Built with Fern](https://img.shields.io/badge/Built%20with%20Fern-brightgreen)](https://buildwithfern.com)
 [![PyPI Version](https://img.shields.io/pypi/v/murf)](https://pypi.org/project/murf/)
@@ -46,6 +46,9 @@ For more detailed information, refer to the [official documentation](https://mur
 
 - **Text-to-Speech Conversion**: Transform text into natural-sounding speech.
 - **Multilingual Support**: Access voices in over 13 languages, including English, French, German, Spanish, Italian, Hindi, Portuguese, Dutch, Korean, Chinese (Mandarin), Bengali, Tamil, and Polish.
+
+![Murf AI Languages](https://murf.ai/public-assets/home/Murf_Lang.png)
+
 - **Multiple Voice Styles**: Choose from 20+ speaking styles to suit your application's needs.
 - **Advanced Voice Customization**: Adjust parameters like pitch, speed, pauses, and pronunciation for optimal output.
 - **Asynchronous Support**: Utilize the async client for non-blocking API calls.
