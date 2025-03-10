@@ -22,11 +22,13 @@
 
 ## Overview
 
-The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.ai/) API, enabling developers to convert text into lifelike speech effortlessly. With over 130 natural-sounding voices across 13+ languages and 20+ speaking styles, Murf provides unparalleled speech customization for a wide range of applications. The SDK is designed for both synchronous and asynchronous workflows, featuring robust error handling, advanced configuration options, and support for real-time applications.
+The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.ai/) [text-to-speech software.](https://murf.ai/text-to-speech), enabling developers and creators to convert text into lifelike speech effortlessly. With over 130 natural-sounding voices across 13+ languages and 20+ speaking styles, Murf provides unparalleled speech customization for a wide range of applications. The SDK is designed for both synchronous and asynchronous workflows, featuring robust error handling, advanced configuration options, and support for real-time applications.
 
 ---
 
 ## Installation
+
+Check out the [HTTP API documentation]((https://murf.ai/api/docs/introduction/quickstart)).
 
 Install the SDK using pip:
 
@@ -180,7 +182,7 @@ client = Murf(api_key="YOUR_API_KEY", httpx_client=custom_httpx_client)
 
 ## Contributing
 
-We welcome contributions to enhance the Murf Python SDK. Please note that this library is generated programmatically, so direct modifications may be overwritten. We suggest opening an issue first to discuss your ideas or improvements. Contributions to the documentation are especially appreciated! For any support connect support@murf.ai 
+We welcome contributions to enhance the Murf Python SDK. Please note that this library is generated programmatically, so direct modifications may be overwritten. We suggest opening an issue first to discuss your ideas or improvements. Contributions to the documentation are especially appreciated! For any support queries email to support@murf.ai 
 
 ---
 
