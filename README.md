@@ -28,7 +28,7 @@ The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.
 
 ## Installation
 
-Check out the [HTTP API documentation]((https://murf.ai/api/docs/introduction/quickstart)).
+Check out the [HTTP API documentation](https://murf.ai/api/docs/introduction/quickstart).
 
 Install the SDK using pip:
 
