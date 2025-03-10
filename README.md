@@ -22,7 +22,7 @@
 
 ## Overview
 
-The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.ai/) [text-to-speech software.](https://murf.ai/text-to-speech), enabling developers and creators to convert text into lifelike speech effortlessly. With over 130 natural-sounding voices across 13+ languages and 20+ speaking styles, Murf provides unparalleled speech customization for a wide range of applications. The SDK is designed for both synchronous and asynchronous workflows, featuring robust error handling, advanced configuration options, and support for real-time applications.
+The Murf Python SDK offers seamless integration with the [Murf AI](https://murf.ai/) [text-to-speech software](https://murf.ai/text-to-speech), enabling developers and creators to convert text into lifelike speech effortlessly. With over 130 natural-sounding voices across 13+ languages and 20+ speaking styles, Murf provides unparalleled speech customization for a wide range of applications. The SDK is designed for both synchronous and asynchronous workflows, featuring robust error handling, advanced configuration options, and support for real-time applications.
 
 ---
 
