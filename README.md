@@ -12,9 +12,9 @@
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Features](#features)
-- [Asynchronous Usage](#asynchronous-usage)
-- [Error Handling](#error-handling)
-- [Advanced Configuration](#advanced-configuration)
+- [Asynchronous Usage](#async-client)
+- [Exception Handling](#exception-handling)
+- [Advanced Configuration](#advanced)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -45,20 +45,15 @@ Here's a quick example to get you started with the Murf SDK:
 ```python
 from murf import Murf
 
-# Initialize the client with your API key
-client = Murf(api_key="YOUR_API_KEY")
-
-# Generate speech from text
-audio = client.text_to_speech.generate(
+client = Murf(
+    api_key="YOUR_API_KEY",
+)
+client.text_to_speech.generate(
     format="MP3",
     sample_rate=44100.0,
     text="Hello, world!",
     voice_id="en-US-natalie",
 )
-
-# Save the audio to a file
-with open("output.mp3", "wb") as f:
-    f.write(audio)
 ```
 
 For more detailed information, refer to the [official documentation](https://murf.ai/api/docs/introduction/quickstart).
@@ -80,104 +75,108 @@ For more detailed information, refer to the [official documentation](https://mur
 
 ---
 
-## Asynchronous Usage
+## Async Client
 
-The SDK supports asynchronous operations for non-blocking requests:
+The SDK also exports an `async` client so that you can make non-blocking calls to our API.
 
 ```python
 import asyncio
+
 from murf import AsyncMurf
 
-# Initialize the async client
-client = AsyncMurf(api_key="YOUR_API_KEY")
+client = AsyncMurf(
+    api_key="YOUR_API_KEY",
+)
 
-async def main():
-    audio = await client.text_to_speech.generate(
+
+async def main() -> None:
+    await client.text_to_speech.generate(
         format="MP3",
         sample_rate=44100.0,
         text="Hello, world!",
         voice_id="en-US-natalie",
     )
-    # Save the audio to a file
-    with open("output_async.mp3", "wb") as f:
-        f.write(audio)
 
-# Run the async function
+
 asyncio.run(main())
 ```
 
 ---
 
-## Error Handling
+## Exception Handling
 
-Handle exceptions gracefully to ensure robust applications:
+When the API returns a non-success status code (4xx or 5xx response), a subclass of the following error
+will be thrown.
 
 ```python
 from murf.core.api_error import ApiError
 
 try:
-    client.text_to_speech.generate(
-        format="MP3",
-        sample_rate=44100.0,
-        text="Hello, world!",
-        voice_id="en-US-natalie",
-    )
+    client.text_to_speech.generate(...)
 except ApiError as e:
-    print(f"Error: {e.status_code} - {e.body}")
+    print(e.status_code)
+    print(e.body)
 ```
 
 ---
 
-## Advanced Configuration
+## Advanced
 
-### Retry Mechanism
+### Retries
 
-Configure automatic retries for transient errors:
+The SDK is instrumented with automatic retries with exponential backoff. A request will be retried as long
+as the request is deemed retriable and the number of retry attempts has not grown larger than the configured
+retry limit (default: 2).
 
-```python
-client.text_to_speech.generate(
-    format="MP3",
-    sample_rate=44100.0,
-    text="Hello, world!",
-    voice_id="en-US-natalie",
-    request_options={"max_retries": 3},
-)
-```
+A request is deemed retriable when any of the following HTTP status codes is returned:
 
-### Timeout Settings
+- [408](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/408) (Timeout)
+- [429](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) (Too Many Requests)
+- [5XX](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) (Internal Server Errors)
 
-Set client-wide and per-request timeouts:
+Use the `max_retries` request option to configure this behavior.
 
 ```python
-# Set a client-wide timeout
-client = Murf(api_key="YOUR_API_KEY", timeout=30.0)
-
-# Override timeout for a specific request
-client.text_to_speech.generate(
-    format="MP3",
-    sample_rate=44100.0,
-    text="Hello, world!",
-    voice_id="en-US-natalie",
-    request_options={"timeout_in_seconds": 10},
-)
+client.text_to_speech.generate(..., request_options={
+    "max_retries": 1
+})
 ```
 
-### Custom HTTP Client
+### Timeouts
 
-Integrate a custom HTTP client for advanced use cases:
+The SDK defaults to a 60 second timeout. You can configure this with a timeout option at the client or request level.
 
+```python
+
+from murf import Murf
+
+client = Murf(
+    ...,
+    timeout=20.0,
+)
+
+
+# Override timeout for a specific method
+client.text_to_speech.generate(..., request_options={
+    "timeout_in_seconds": 1
+})
+```
+
+### Custom Client
+
+You can override the `httpx` client to customize it for your use-case. Some common use-cases include support for proxies
+and transports.
 ```python
 import httpx
 from murf import Murf
 
-# Create a custom HTTPX client
-custom_httpx_client = httpx.Client(
-    proxies="http://my.proxy.server",
-    transport=httpx.HTTPTransport(local_address="0.0.0.0"),
+client = Murf(
+    ...,
+    httpx_client=httpx.Client(
+        proxies="http://my.test.proxy.example.com",
+        transport=httpx.HTTPTransport(local_address="0.0.0.0"),
+    ),
 )
-
-# Initialize the Murf client with the custom HTTPX client
-client = Murf(api_key="YOUR_API_KEY", httpx_client=custom_httpx_client)
 ```
 
 ---
